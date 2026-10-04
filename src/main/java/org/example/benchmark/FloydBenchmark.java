@@ -43,10 +43,8 @@ public class FloydBenchmark {
 
     public static List<FloydRecord> run() {
         List<FloydRecord> records = new ArrayList<>();
-        System.out.println("=== Starting Floyd buildHeap vs n Inserts Benchmark (Bonus Task B) ===");
 
         for (int n : SIZES) {
-            System.out.println("Comparing Floyd vs Inserts for n = " + n + "...");
             records.add(benchmarkMethod("Floyd_O(n)", n));
             records.add(benchmarkMethod("Sequential_O(n_log_n)", n));
         }
@@ -66,7 +64,6 @@ public class FloydBenchmark {
     private static FloydRecord benchmarkMethod(String method, int n) {
         int[] data = generateData(n);
 
-        // Warmup
         for (int w = 0; w < WARMUP_RUNS; w++) {
             OpCounter cnt = new OpCounter();
             if ("Floyd_O(n)".equals(method)) {
@@ -76,7 +73,6 @@ public class FloydBenchmark {
             }
         }
 
-        // Measure
         double[] times = new double[MEASURE_RUNS];
         long finalSteps = 0, finalMoves = 0, finalComparisons = 0;
 

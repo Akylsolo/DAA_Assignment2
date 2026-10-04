@@ -36,24 +36,18 @@ public class MemoryBenchmark {
 
     public static List<MemoryRecord> run() {
         List<MemoryRecord> records = new ArrayList<>();
-        System.out.println("=== Starting JOL Memory Benchmark (Bonus Task A) ===");
 
         for (int n : SIZES) {
-            System.out.println("Measuring memory for n = " + n + "...");
-
-            // DynamicArray
             DynamicArray da = new DynamicArray(n);
             for (int i = 0; i < n; i++) da.add(i);
             long daBytes = GraphLayout.parseInstance(da).totalSize();
             records.add(new MemoryRecord("DynamicArray", n, daBytes));
 
-            // MyLinkedList
             MyLinkedList ll = new MyLinkedList();
             for (int i = 0; i < n; i++) ll.add(i);
             long llBytes = GraphLayout.parseInstance(ll).totalSize();
             records.add(new MemoryRecord("MyLinkedList", n, llBytes));
 
-            // MinHeap
             MinHeap mh = new MinHeap(n);
             for (int i = 0; i < n; i++) mh.insert(i);
             long mhBytes = GraphLayout.parseInstance(mh).totalSize();

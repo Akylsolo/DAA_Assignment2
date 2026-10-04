@@ -2,10 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 
-/**
- * Doubly-linked list implementation storing primitive ints.
- * Counts pointer updates as moves and node navigations as steps.
- */
 public class MyLinkedList implements IntList {
 
     public static class Node {
@@ -148,7 +144,7 @@ public class MyLinkedList implements IntList {
                 return true;
             }
             curr = curr.next;
-            counter.step(); // moving to next node
+            counter.step();
         }
         return false;
     }

@@ -2,7 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -22,7 +21,6 @@ public class MyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Empty list edge cases")
     void testEmptyList() {
         assertTrue(list.isEmpty());
         assertEquals(0, list.size());
@@ -37,7 +35,6 @@ public class MyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Single element operations")
     void testSingleElement() {
         list.add(10);
         assertFalse(list.isEmpty());
@@ -57,44 +54,36 @@ public class MyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Add and remove at first, middle, and last indices")
     void testAddAndRemoveBoundaries() {
         list.add(10);
         list.add(20);
         list.add(30);
 
-        // Add at head
         list.add(0, 5);
         assertEquals(5, list.get(0));
         assertEquals(10, list.get(1));
         assertEquals(4, list.size());
 
-        // Add at middle
         list.add(2, 15);
         assertEquals(15, list.get(2));
         assertEquals(5, list.size());
 
-        // Add at tail
         list.add(list.size(), 40);
         assertEquals(40, list.get(list.size() - 1));
         assertEquals(6, list.size());
 
-        // Remove head
         assertEquals(5, list.remove(0));
         assertEquals(10, list.get(0));
 
-        // Remove middle
         assertEquals(15, list.remove(1));
         assertEquals(20, list.get(1));
 
-        // Remove tail
         int lastIdx = list.size() - 1;
         assertEquals(40, list.remove(lastIdx));
         assertEquals(30, list.get(list.size() - 1));
     }
 
     @Test
-    @DisplayName("Duplicates and contains")
     void testDuplicates() {
         list.add(5);
         list.add(10);
@@ -108,7 +97,6 @@ public class MyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Operation counter tracking")
     void testOpCounter() {
         for (int i = 0; i < 10; i++) {
             list.add(i);
@@ -124,7 +112,6 @@ public class MyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Randomized correctness test against java.util.LinkedList")
     void testRandomizedAgainstJavaLinkedList() {
         LinkedList<Integer> expected = new LinkedList<>();
         MyLinkedList actual = new MyLinkedList();
@@ -135,22 +122,22 @@ public class MyLinkedListTest {
             int val = rng.nextInt(1000);
 
             switch (action) {
-                case 0 -> { // add
+                case 0 -> {
                     expected.add(val);
                     actual.add(val);
                 }
-                case 1 -> { // add at index
+                case 1 -> {
                     int idx = rng.nextInt(expected.size() + 1);
                     expected.add(idx, val);
                     actual.add(idx, val);
                 }
-                case 2 -> { // get
+                case 2 -> {
                     if (!expected.isEmpty()) {
                         int idx = rng.nextInt(expected.size());
                         assertEquals(expected.get(idx).intValue(), actual.get(idx));
                     }
                 }
-                case 3 -> { // remove
+                case 3 -> {
                     if (!expected.isEmpty()) {
                         int idx = rng.nextInt(expected.size());
                         int expRemoved = expected.remove(idx);
@@ -158,7 +145,7 @@ public class MyLinkedListTest {
                         assertEquals(expRemoved, actRemoved);
                     }
                 }
-                case 4 -> { // contains
+                case 4 -> {
                     int searchVal = rng.nextInt(1000);
                     assertEquals(expected.contains(searchVal), actual.contains(searchVal));
                 }

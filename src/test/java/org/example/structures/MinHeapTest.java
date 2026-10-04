@@ -2,7 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.PriorityQueue;
@@ -22,7 +21,6 @@ public class MinHeapTest {
     }
 
     @Test
-    @DisplayName("Empty heap edge cases")
     void testEmptyHeap() {
         assertTrue(heap.isEmpty());
         assertEquals(0, heap.size());
@@ -31,7 +29,6 @@ public class MinHeapTest {
     }
 
     @Test
-    @DisplayName("Single element insert and extract")
     void testSingleElement() {
         heap.insert(42);
         assertFalse(heap.isEmpty());
@@ -46,23 +43,21 @@ public class MinHeapTest {
     }
 
     @Test
-    @DisplayName("Heap property maintained after every insert and extractMin")
     void testHeapPropertyAfterEveryOperation() {
         Random rng = new Random(777);
         int n = 100;
         for (int i = 0; i < n; i++) {
             heap.insert(rng.nextInt(1000));
-            assertTrue(heap.verifyHeapProperty(), "Heap property violated after insert at size " + heap.size());
+            assertTrue(heap.verifyHeapProperty());
         }
 
         while (!heap.isEmpty()) {
             heap.extractMin();
-            assertTrue(heap.verifyHeapProperty(), "Heap property violated after extractMin at size " + heap.size());
+            assertTrue(heap.verifyHeapProperty());
         }
     }
 
     @Test
-    @DisplayName("Sorted output: n extractMin calls produce non-decreasing sequence")
     void testSortedOutput() {
         Random rng = new Random(888);
         int n = 500;
@@ -73,14 +68,13 @@ public class MinHeapTest {
         int prev = Integer.MIN_VALUE;
         for (int i = 0; i < n; i++) {
             int current = heap.extractMin();
-            assertTrue(current >= prev, "Values not in non-decreasing order: " + prev + " > " + current);
+            assertTrue(current >= prev);
             prev = current;
         }
         assertTrue(heap.isEmpty());
     }
 
     @Test
-    @DisplayName("Duplicate values handling")
     void testDuplicateValues() {
         heap.insert(5);
         heap.insert(3);
@@ -100,7 +94,6 @@ public class MinHeapTest {
     }
 
     @Test
-    @DisplayName("Randomized correctness test against java.util.PriorityQueue")
     void testRandomizedAgainstJavaPriorityQueue() {
         PriorityQueue<Integer> expected = new PriorityQueue<>();
         MinHeap actual = new MinHeap();
@@ -125,7 +118,6 @@ public class MinHeapTest {
     }
 
     @Test
-    @DisplayName("Bonus Task B: Floyd's buildHeap builds valid heap in O(n)")
     void testFloydBuildHeap() {
         int[] data = {15, 3, 2, 8, 12, 1, 9, 7, 4, 10, 6};
         MinHeap floydHeap = MinHeap.buildHeap(data, new OpCounter());

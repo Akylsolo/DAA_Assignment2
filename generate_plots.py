@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 os.makedirs('results/plots', exist_ok=True)
 
-# 1. Parse results.csv
 results = []
 with open('results/results.csv', 'r', encoding='utf-8') as f:
     reader = csv.DictReader(f)
@@ -20,7 +19,6 @@ with open('results/results.csv', 'r', encoding='utf-8') as f:
             'comparisons': int(row['comparisons'])
         })
 
-# Helper to filter
 def filter_res(workload, variant=None, structure=None):
     filtered = [r for r in results if r['workload'] == workload]
     if variant is not None:
@@ -29,16 +27,13 @@ def filter_res(workload, variant=None, structure=None):
         filtered = [r for r in filtered if r['structure'] == structure]
     return sorted(filtered, key=lambda x: x['n'])
 
-# Set style
 plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
 plt.rcParams.update({'font.sans-serif': 'DejaVu Sans', 'font.size': 11})
 
-# --- W1: Random Access ---
 w1_da = filter_res('W1', structure='DynamicArray')
 w1_ll = filter_res('W1', structure='MyLinkedList')
 ns = [r['n'] for r in w1_da]
 
-# W1: Time vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['time_ms'] for r in w1_da], marker='o', linewidth=2, label='DynamicArray O(1) get')
 plt.plot(ns, [r['time_ms'] for r in w1_ll], marker='s', linewidth=2, label='MyLinkedList O(n) get')
@@ -53,7 +48,6 @@ plt.tight_layout()
 plt.savefig('results/plots/w1_time_vs_n.png', dpi=300)
 plt.close()
 
-# W1: Steps vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['steps'] for r in w1_da], marker='o', linewidth=2, label='DynamicArray Steps (10,000 const)')
 plt.plot(ns, [r['steps'] for r in w1_ll], marker='s', linewidth=2, label='MyLinkedList Steps (linear with n)')
@@ -68,11 +62,9 @@ plt.tight_layout()
 plt.savefig('results/plots/w1_ops_vs_n.png', dpi=300)
 plt.close()
 
-# --- W2: Search (1000 contains) ---
 w2_da = filter_res('W2', structure='DynamicArray')
 w2_ll = filter_res('W2', structure='MyLinkedList')
 
-# W2: Time vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['time_ms'] for r in w2_da], marker='o', linewidth=2, label='DynamicArray (Cache Local)')
 plt.plot(ns, [r['time_ms'] for r in w2_ll], marker='s', linewidth=2, label='MyLinkedList (Pointer Chasing)')
@@ -87,7 +79,6 @@ plt.tight_layout()
 plt.savefig('results/plots/w2_time_vs_n.png', dpi=300)
 plt.close()
 
-# W2: Ops vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['steps'] for r in w2_da], marker='o', linewidth=2, label='DynamicArray Steps')
 plt.plot(ns, [r['steps'] for r in w2_ll], marker='s', linewidth=2, linestyle='--', label='MyLinkedList Steps')
@@ -103,11 +94,9 @@ plt.tight_layout()
 plt.savefig('results/plots/w2_ops_vs_n.png', dpi=300)
 plt.close()
 
-# --- W3 Head: Insert & Remove at index 0 ---
 w3h_da = filter_res('W3', variant='head', structure='DynamicArray')
 w3h_ll = filter_res('W3', variant='head', structure='MyLinkedList')
 
-# W3 Head: Time vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['time_ms'] for r in w3h_da], marker='o', linewidth=2, label='DynamicArray Head (O(n) shift)')
 plt.plot(ns, [r['time_ms'] for r in w3h_ll], marker='s', linewidth=2, label='MyLinkedList Head (O(1) pointer)')
@@ -122,7 +111,6 @@ plt.tight_layout()
 plt.savefig('results/plots/w3_head_time_vs_n.png', dpi=300)
 plt.close()
 
-# W3 Head: Ops vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['moves'] for r in w3h_da], marker='o', linewidth=2, label='DynamicArray Moves (element shifts)')
 plt.plot(ns, [r['moves'] for r in w3h_ll], marker='s', linewidth=2, label='MyLinkedList Moves (5,000 const link updates)')
@@ -137,11 +125,9 @@ plt.tight_layout()
 plt.savefig('results/plots/w3_head_ops_vs_n.png', dpi=300)
 plt.close()
 
-# --- W3 Middle: Insert & Remove at index n/2 ---
 w3m_da = filter_res('W3', variant='middle', structure='DynamicArray')
 w3m_ll = filter_res('W3', variant='middle', structure='MyLinkedList')
 
-# W3 Middle: Time vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['time_ms'] for r in w3m_da], marker='o', linewidth=2, label='DynamicArray Middle (Shift O(n))')
 plt.plot(ns, [r['time_ms'] for r in w3m_ll], marker='s', linewidth=2, label='MyLinkedList Middle (Traverse O(n))')
@@ -156,7 +142,6 @@ plt.tight_layout()
 plt.savefig('results/plots/w3_middle_time_vs_n.png', dpi=300)
 plt.close()
 
-# W3 Middle: Ops vs n
 plt.figure(figsize=(8, 5))
 plt.plot(ns, [r['steps'] for r in w3m_da], marker='o', linewidth=2, label='DynamicArray Steps (reads)')
 plt.plot(ns, [r['moves'] for r in w3m_da], marker='v', linewidth=2, label='DynamicArray Moves (shifts)')
@@ -173,10 +158,8 @@ plt.tight_layout()
 plt.savefig('results/plots/w3_middle_ops_vs_n.png', dpi=300)
 plt.close()
 
-# --- W4: MinHeap Priority Processing ---
 w4_mh = filter_res('W4', structure='MinHeap')
 
-plt.figure(figsize=(8, 5))
 fig, ax1 = plt.subplots(figsize=(8, 5))
 ax2 = ax1.twinx()
 
@@ -202,7 +185,6 @@ plt.tight_layout()
 plt.savefig('results/plots/w4_time_and_ops_vs_n.png', dpi=300)
 plt.close()
 
-# --- Bonus Task A: Memory Footprint ---
 mem_records = {'DynamicArray': [], 'MyLinkedList': [], 'MinHeap': []}
 with open('results/memory_footprint.csv', 'r', encoding='utf-8') as f:
     reader = csv.DictReader(f)
@@ -225,7 +207,6 @@ plt.tight_layout()
 plt.savefig('results/plots/bonus_memory_vs_n.png', dpi=300)
 plt.close()
 
-# --- Bonus Task B: Floyd vs Insertions ---
 floyd_records = {'Floyd_O(n)': [], 'Sequential_O(n_log_n)': []}
 with open('results/floyd_vs_insert.csv', 'r', encoding='utf-8') as f:
     reader = csv.DictReader(f)
@@ -270,5 +251,3 @@ ax2.grid(True, which="both", ls="--", alpha=0.5)
 plt.tight_layout()
 plt.savefig('results/plots/bonus_floyd_vs_insert.png', dpi=300)
 plt.close()
-
-print('All plots generated successfully in results/plots/!')

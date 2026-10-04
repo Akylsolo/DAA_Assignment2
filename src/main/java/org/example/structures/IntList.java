@@ -2,9 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 
-/**
- * Common list interface for primitive int data structures.
- */
 public interface IntList {
     void add(int element);
 

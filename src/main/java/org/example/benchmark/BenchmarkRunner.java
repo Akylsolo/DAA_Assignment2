@@ -24,27 +24,19 @@ public class BenchmarkRunner {
     public static List<BenchmarkResult> runAll() {
         List<BenchmarkResult> results = new ArrayList<>();
 
-        System.out.println("=== Starting Workload Benchmarks ===");
-
         for (int n : SIZES) {
-            System.out.println("Running benchmarks for n = " + n + "...");
-            // W1 - Random Access
             results.add(benchmarkW1("DynamicArray", n));
             results.add(benchmarkW1("MyLinkedList", n));
 
-            // W2 - Search
             results.add(benchmarkW2("DynamicArray", n));
             results.add(benchmarkW2("MyLinkedList", n));
 
-            // W3 - Insert & Remove (head)
             results.add(benchmarkW3("DynamicArray", n, "head"));
             results.add(benchmarkW3("MyLinkedList", n, "head"));
 
-            // W3 - Insert & Remove (middle)
             results.add(benchmarkW3("DynamicArray", n, "middle"));
             results.add(benchmarkW3("MyLinkedList", n, "middle"));
 
-            // W4 - Priority Processing (MinHeap)
             results.add(benchmarkW4(n));
         }
 
@@ -69,7 +61,6 @@ public class BenchmarkRunner {
         return data;
     }
 
-    // W1: Fill with n values, perform 10,000 get(index) calls with a random index
     private static BenchmarkResult benchmarkW1(String structure, int n) {
         int[] initialData = generateData(n);
         int numQueries = 10_000;
@@ -79,7 +70,6 @@ public class BenchmarkRunner {
             queryIndices[i] = rngQuery.nextInt(n);
         }
 
-        // Warmup
         for (int w = 0; w < WARMUP_RUNS; w++) {
             IntList list = createList(structure, new OpCounter());
             for (int val : initialData) list.add(val);
@@ -90,7 +80,6 @@ public class BenchmarkRunner {
             if (sink == 42) System.out.print("");
         }
 
-        // Measure
         double[] times = new double[MEASURE_RUNS];
         long finalSteps = 0, finalMoves = 0, finalComparisons = 0;
 
@@ -121,7 +110,6 @@ public class BenchmarkRunner {
         return new BenchmarkResult("W1", "-", structure, n, medianTime, finalSteps, finalMoves, finalComparisons);
     }
 
-    // W2: Perform 1,000 contains(x) queries, half present and half not
     private static BenchmarkResult benchmarkW2(String structure, int n) {
         int[] initialData = generateData(n);
         int numQueries = 1_000;
@@ -129,17 +117,14 @@ public class BenchmarkRunner {
         int[] queries = new int[numQueries];
 
         Random rngQ = new Random(42);
-        // Half present
         for (int i = 0; i < half; i++) {
             int randomIdx = rngQ.nextInt(n);
             queries[i] = initialData[randomIdx];
         }
-        // Half not present (negative integers, since initialData has positive numbers)
         for (int i = half; i < numQueries; i++) {
             queries[i] = -1 - rngQ.nextInt(1_000_000);
         }
 
-        // Warmup
         for (int w = 0; w < WARMUP_RUNS; w++) {
             IntList list = createList(structure, new OpCounter());
             for (int val : initialData) list.add(val);
@@ -150,7 +135,6 @@ public class BenchmarkRunner {
             if (hits == -1) System.out.print("");
         }
 
-        // Measure
         double[] times = new double[MEASURE_RUNS];
         long finalSteps = 0, finalMoves = 0, finalComparisons = 0;
 
@@ -181,7 +165,6 @@ public class BenchmarkRunner {
         return new BenchmarkResult("W2", "-", structure, n, medianTime, finalSteps, finalMoves, finalComparisons);
     }
 
-    // W3: Insert & Remove (1,000 insertions and 1,000 removals at head or middle)
     private static BenchmarkResult benchmarkW3(String structure, int n, String variant) {
         int[] initialData = generateData(n);
         int opCount = 1_000;
@@ -191,7 +174,6 @@ public class BenchmarkRunner {
             insertValues[i] = rngIns.nextInt(1_000_000);
         }
 
-        // Warmup
         for (int w = 0; w < WARMUP_RUNS; w++) {
             IntList list = createList(structure, new OpCounter());
             for (int val : initialData) list.add(val);
@@ -205,7 +187,6 @@ public class BenchmarkRunner {
             }
         }
 
-        // Measure
         double[] times = new double[MEASURE_RUNS];
         long finalSteps = 0, finalMoves = 0, finalComparisons = 0;
 
@@ -246,11 +227,9 @@ public class BenchmarkRunner {
         return new BenchmarkResult("W3", variant, structure, n, medianTime, finalSteps, finalMoves, finalComparisons);
     }
 
-    // W4: Priority Processing: MinHeap. Insert n values, then call extractMin() n times, check non-decreasing
     private static BenchmarkResult benchmarkW4(int n) {
         int[] initialData = generateData(n);
 
-        // Warmup
         for (int w = 0; w < WARMUP_RUNS; w++) {
             MinHeap heap = new MinHeap(new OpCounter());
             for (int val : initialData) {
@@ -264,7 +243,6 @@ public class BenchmarkRunner {
             }
         }
 
-        // Measure
         double[] times = new double[MEASURE_RUNS];
         long finalSteps = 0, finalMoves = 0, finalComparisons = 0;
 

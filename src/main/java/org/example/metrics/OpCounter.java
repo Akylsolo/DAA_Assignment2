@@ -1,11 +1,5 @@
 package org.example.metrics;
 
-/**
- * Tracks physical operations performed by data structures:
- * - steps: one read of an array cell or one move to the next node
- * - moves: one element shifted inside the array or one link (pointer) update in the list
- * - comparisons: one comparison of two elements
- */
 public class OpCounter {
     private long steps;
     private long moves;

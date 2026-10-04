@@ -2,10 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 
-/**
- * Array-based binary min-heap storing primitive ints.
- * Satisfies the heap property: heap[parent] <= heap[child].
- */
 public class MinHeap {
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -34,9 +30,6 @@ public class MinHeap {
         this.counter = counter != null ? counter : new OpCounter();
     }
 
-    /**
-     * Inserts an element into the min-heap and restores heap property using bubble-up.
-     */
     public void insert(int element) {
         ensureCapacity(size + 1);
         heap[size] = element;
@@ -45,20 +38,14 @@ public class MinHeap {
         size++;
     }
 
-    /**
-     * Returns the minimum element in O(1) without removing it.
-     */
     public int peekMin() {
         if (isEmpty()) {
             throw new IllegalStateException("Heap is empty");
         }
-        counter.step(); // read root
+        counter.step();
         return heap[0];
     }
 
-    /**
-     * Removes and returns the minimum element, restoring heap property via bubble-down.
-     */
     public int extractMin() {
         if (isEmpty()) {
             throw new IllegalStateException("Heap is empty");
@@ -78,15 +65,12 @@ public class MinHeap {
         return minVal;
     }
 
-    /**
-     * Restores min-heap property by bubbling an element up towards the root.
-     */
     private void bubbleUp(int index) {
         int curr = index;
         while (curr > 0) {
             int parent = (curr - 1) / 2;
-            counter.step(); // read curr
-            counter.step(); // read parent
+            counter.step();
+            counter.step();
             counter.compare();
             if (heap[curr] < heap[parent]) {
                 swap(curr, parent);
@@ -97,9 +81,6 @@ public class MinHeap {
         }
     }
 
-    /**
-     * Restores min-heap property by bubbling an element down towards the leaves.
-     */
     public void bubbleDown(int index) {
         int curr = index;
         while (true) {
@@ -108,8 +89,8 @@ public class MinHeap {
             int smallest = curr;
 
             if (left < size) {
-                counter.step(); // read smallest
-                counter.step(); // read left
+                counter.step();
+                counter.step();
                 counter.compare();
                 if (heap[left] < heap[smallest]) {
                     smallest = left;
@@ -117,8 +98,8 @@ public class MinHeap {
             }
 
             if (right < size) {
-                counter.step(); // read smallest
-                counter.step(); // read right
+                counter.step();
+                counter.step();
                 counter.compare();
                 if (heap[right] < heap[smallest]) {
                     smallest = right;
@@ -159,9 +140,6 @@ public class MinHeap {
         }
     }
 
-    /**
-     * Bonus Task B: Floyd's bottom-up buildHeap algorithm in O(n).
-     */
     public static MinHeap buildHeap(int[] array, OpCounter counter) {
         OpCounter cnt = counter != null ? counter : new OpCounter();
         MinHeap minHeap = new MinHeap(array.length, cnt);
@@ -172,16 +150,12 @@ public class MinHeap {
             cnt.move();
         }
         minHeap.size = array.length;
-        // Heapify from the last non-leaf node down to the root
         for (int i = (minHeap.size / 2) - 1; i >= 0; i--) {
             minHeap.bubbleDown(i);
         }
         return minHeap;
     }
 
-    /**
-     * Builds a heap by calling insert() n times in O(n log n) for comparison with Floyd's method.
-     */
     public static MinHeap buildByInsertions(int[] array, OpCounter counter) {
         OpCounter cnt = counter != null ? counter : new OpCounter();
         MinHeap minHeap = new MinHeap(array.length, cnt);

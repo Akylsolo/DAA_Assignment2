@@ -2,10 +2,6 @@ package org.example.structures;
 
 import org.example.metrics.OpCounter;
 
-/**
- * Array-based dynamic list storing primitive ints.
- * Automatically doubles its capacity when full.
- */
 public class DynamicArray implements IntList {
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -49,9 +45,9 @@ public class DynamicArray implements IntList {
         }
         ensureCapacity(size + 1);
         for (int i = size - 1; i >= index; i--) {
-            counter.step(); // read data[i]
+            counter.step();
             data[i + 1] = data[i];
-            counter.move(); // shift element
+            counter.move();
         }
         data[index] = element;
         counter.move();
@@ -63,12 +59,12 @@ public class DynamicArray implements IntList {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index " + index + " out of bounds for size " + size);
         }
-        counter.step(); // read data[index]
+        counter.step();
         int removedValue = data[index];
         for (int i = index + 1; i < size; i++) {
-            counter.step(); // read data[i]
+            counter.step();
             data[i - 1] = data[i];
-            counter.move(); // shift element
+            counter.move();
         }
         size--;
         return removedValue;
@@ -79,15 +75,15 @@ public class DynamicArray implements IntList {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index " + index + " out of bounds for size " + size);
         }
-        counter.step(); // read array cell
+        counter.step();
         return data[index];
     }
 
     @Override
     public boolean contains(int element) {
         for (int i = 0; i < size; i++) {
-            counter.step();    // read data[i]
-            counter.compare(); // compare data[i] with target
+            counter.step();
+            counter.compare();
             if (data[i] == element) {
                 return true;
             }
@@ -132,9 +128,9 @@ public class DynamicArray implements IntList {
             }
             int[] newData = new int[newCapacity];
             for (int i = 0; i < size; i++) {
-                counter.step(); // read old cell
+                counter.step();
                 newData[i] = data[i];
-                counter.move(); // copy into new array
+                counter.move();
             }
             data = newData;
         }
