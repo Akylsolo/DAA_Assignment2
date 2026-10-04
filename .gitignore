@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 .kotlin
 *.zip
+push_to_github.bat
 
 ### IntelliJ IDEA ###
 .idea/
