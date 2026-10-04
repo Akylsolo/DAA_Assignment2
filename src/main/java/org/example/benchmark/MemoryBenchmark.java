@@ -37,6 +37,10 @@ public class MemoryBenchmark {
     public static List<MemoryRecord> run() {
         List<MemoryRecord> records = new ArrayList<>();
 
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println(" Memory Footprint Benchmark (JOL Analysis - Bonus Task A)");
+        System.out.println("--------------------------------------------------------------------------------");
+
         for (int n : SIZES) {
             DynamicArray da = new DynamicArray(n);
             for (int i = 0; i < n; i++) da.add(i);
@@ -52,7 +56,13 @@ public class MemoryBenchmark {
             for (int i = 0; i < n; i++) mh.insert(i);
             long mhBytes = GraphLayout.parseInstance(mh).totalSize();
             records.add(new MemoryRecord("MinHeap", n, mhBytes));
+
+            System.out.printf("  n = %,7d | DynamicArray: %9d B (%.4f MB) | MyLinkedList: %9d B (%.4f MB) | MinHeap: %9d B (%.4f MB)%n",
+                    n, daBytes, daBytes / (1024.0 * 1024.0),
+                    llBytes, llBytes / (1024.0 * 1024.0),
+                    mhBytes, mhBytes / (1024.0 * 1024.0));
         }
+        System.out.println();
 
         return records;
     }

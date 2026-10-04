@@ -44,10 +44,21 @@ public class FloydBenchmark {
     public static List<FloydRecord> run() {
         List<FloydRecord> records = new ArrayList<>();
 
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println(" Floyd's buildHeap O(n) vs Sequential O(n log n) Inserts (Bonus Task B)");
+        System.out.println("--------------------------------------------------------------------------------");
+
         for (int n : SIZES) {
-            records.add(benchmarkMethod("Floyd_O(n)", n));
-            records.add(benchmarkMethod("Sequential_O(n_log_n)", n));
+            FloydRecord floyd = benchmarkMethod("Floyd_O(n)", n);
+            FloydRecord seq = benchmarkMethod("Sequential_O(n_log_n)", n);
+
+            records.add(floyd);
+            records.add(seq);
+
+            System.out.printf("  n = %,7d | Floyd: %7.4f ms (%8d comps) | Sequential: %7.4f ms (%8d comps)%n",
+                    n, floyd.timeMs, floyd.comparisons, seq.timeMs, seq.comparisons);
         }
+        System.out.println();
 
         return records;
     }

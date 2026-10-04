@@ -24,20 +24,45 @@ public class BenchmarkRunner {
     public static List<BenchmarkResult> runAll() {
         List<BenchmarkResult> results = new ArrayList<>();
 
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println(" Executing Workloads W1 - W4 across sizes n = 100, 1000, 10000, 100000");
+        System.out.println("--------------------------------------------------------------------------------");
+
         for (int n : SIZES) {
-            results.add(benchmarkW1("DynamicArray", n));
-            results.add(benchmarkW1("MyLinkedList", n));
+            System.out.printf("=== Dataset size n = %,d ===%n", n);
 
-            results.add(benchmarkW2("DynamicArray", n));
-            results.add(benchmarkW2("MyLinkedList", n));
+            BenchmarkResult w1Da = benchmarkW1("DynamicArray", n);
+            BenchmarkResult w1Ll = benchmarkW1("MyLinkedList", n);
+            System.out.printf("  W1 Random Access: DynamicArray = %8.4f ms (%10d steps) | MyLinkedList = %8.4f ms (%10d steps)%n",
+                    w1Da.getTimeMs(), w1Da.getSteps(), w1Ll.getTimeMs(), w1Ll.getSteps());
+            results.add(w1Da);
+            results.add(w1Ll);
 
-            results.add(benchmarkW3("DynamicArray", n, "head"));
-            results.add(benchmarkW3("MyLinkedList", n, "head"));
+            BenchmarkResult w2Da = benchmarkW2("DynamicArray", n);
+            BenchmarkResult w2Ll = benchmarkW2("MyLinkedList", n);
+            System.out.printf("  W2 Linear Search: DynamicArray = %8.4f ms (%10d comps) | MyLinkedList = %8.4f ms (%10d comps)%n",
+                    w2Da.getTimeMs(), w2Da.getComparisons(), w2Ll.getTimeMs(), w2Ll.getComparisons());
+            results.add(w2Da);
+            results.add(w2Ll);
 
-            results.add(benchmarkW3("DynamicArray", n, "middle"));
-            results.add(benchmarkW3("MyLinkedList", n, "middle"));
+            BenchmarkResult w3hDa = benchmarkW3("DynamicArray", n, "head");
+            BenchmarkResult w3hLl = benchmarkW3("MyLinkedList", n, "head");
+            System.out.printf("  W3 Head Ins/Rem:  DynamicArray = %8.4f ms (%10d moves) | MyLinkedList = %8.4f ms (%10d moves)%n",
+                    w3hDa.getTimeMs(), w3hDa.getMoves(), w3hLl.getTimeMs(), w3hLl.getMoves());
+            results.add(w3hDa);
+            results.add(w3hLl);
 
-            results.add(benchmarkW4(n));
+            BenchmarkResult w3mDa = benchmarkW3("DynamicArray", n, "middle");
+            BenchmarkResult w3mLl = benchmarkW3("MyLinkedList", n, "middle");
+            System.out.printf("  W3 Mid Ins/Rem:   DynamicArray = %8.4f ms (%10d steps) | MyLinkedList = %8.4f ms (%10d steps)%n",
+                    w3mDa.getTimeMs(), w3mDa.getSteps(), w3mLl.getTimeMs(), w3mLl.getSteps());
+            results.add(w3mDa);
+            results.add(w3mLl);
+
+            BenchmarkResult w4 = benchmarkW4(n);
+            System.out.printf("  W4 MinHeap Sort:  MinHeap      = %8.4f ms (%10d moves, %10d comps)%n%n",
+                    w4.getTimeMs(), w4.getMoves(), w4.getComparisons());
+            results.add(w4);
         }
 
         return results;
