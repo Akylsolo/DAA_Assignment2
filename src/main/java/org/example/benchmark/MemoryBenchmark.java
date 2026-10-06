@@ -8,6 +8,8 @@ import org.openjdk.jol.info.GraphLayout;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,26 +43,35 @@ public class MemoryBenchmark {
         System.out.println(" Memory Footprint Benchmark (JOL Analysis - Bonus Task A)");
         System.out.println("--------------------------------------------------------------------------------");
 
-        for (int n : SIZES) {
-            DynamicArray da = new DynamicArray(n);
-            for (int i = 0; i < n; i++) da.add(i);
-            long daBytes = GraphLayout.parseInstance(da).totalSize();
-            records.add(new MemoryRecord("DynamicArray", n, daBytes));
+        PrintStream originalErr = System.err;
+        System.setErr(new PrintStream(OutputStream.nullOutputStream()));
 
-            MyLinkedList ll = new MyLinkedList();
-            for (int i = 0; i < n; i++) ll.add(i);
-            long llBytes = GraphLayout.parseInstance(ll).totalSize();
-            records.add(new MemoryRecord("MyLinkedList", n, llBytes));
+        try {
+            for (int n : SIZES) {
+                DynamicArray da = new DynamicArray(n);
+                for (int i = 0; i < n; i++) da.add(i);
+                long daBytes = GraphLayout.parseInstance(da).totalSize();
+                records.add(new MemoryRecord("DynamicArray", n, daBytes));
 
-            MinHeap mh = new MinHeap(n);
-            for (int i = 0; i < n; i++) mh.insert(i);
-            long mhBytes = GraphLayout.parseInstance(mh).totalSize();
-            records.add(new MemoryRecord("MinHeap", n, mhBytes));
+                MyLinkedList ll = new MyLinkedList();
+                for (int i = 0; i < n; i++) ll.add(i);
+                long llBytes = GraphLayout.parseInstance(ll).totalSize();
+                records.add(new MemoryRecord("MyLinkedList", n, llBytes));
 
-            System.out.printf("  n = %,7d | DynamicArray: %9d B (%.4f MB) | MyLinkedList: %9d B (%.4f MB) | MinHeap: %9d B (%.4f MB)%n",
-                    n, daBytes, daBytes / (1024.0 * 1024.0),
-                    llBytes, llBytes / (1024.0 * 1024.0),
-                    mhBytes, mhBytes / (1024.0 * 1024.0));
+                MinHeap mh = new MinHeap(n);
+                for (int i = 0; i < n; i++) mh.insert(i);
+                long mhBytes = GraphLayout.parseInstance(mh).totalSize();
+                records.add(new MemoryRecord("MinHeap", n, mhBytes));
+
+                System.setErr(originalErr);
+                System.out.printf("  n = %,7d | DynamicArray: %9d B (%.4f MB) | MyLinkedList: %9d B (%.4f MB) | MinHeap: %9d B (%.4f MB)%n",
+                        n, daBytes, daBytes / (1024.0 * 1024.0),
+                        llBytes, llBytes / (1024.0 * 1024.0),
+                        mhBytes, mhBytes / (1024.0 * 1024.0));
+                System.setErr(new PrintStream(OutputStream.nullOutputStream()));
+            }
+        } finally {
+            System.setErr(originalErr);
         }
         System.out.println();
 
